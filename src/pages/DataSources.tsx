@@ -5,9 +5,9 @@ import {
   Card,
   CardContent,
   Button,
-  Grid,
   Chip,
 } from '@mui/material';
+import { Grid } from '@mui/material';
 import { DataUsage, Add } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
@@ -85,8 +85,8 @@ export const DataSources: React.FC = () => {
       </Box>
 
       <Grid container spacing={3}>
-        {mockDataSources.map((source) => (
-          <Grid item xs={12} md={4} key={source.id}>
+                 {mockDataSources.map((source) => (
+           <Grid size={{ xs: 12, md: 4 }} key={source.id}>
             <Card sx={{ height: '100%' }}>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>

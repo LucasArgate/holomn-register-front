@@ -4,7 +4,6 @@ import {
   Container,
   Typography,
   Button,
-  Grid,
   Card,
   CardContent,
   Paper,
@@ -14,6 +13,7 @@ import {
   Grow,
   Zoom,
 } from '@mui/material';
+import { Grid } from '@mui/material';
 import {
   Security,
   Speed,
@@ -101,8 +101,8 @@ export const Home: React.FC = () => {
         }}
       >
         <Container maxWidth="lg">
-          <Grid container spacing={4} alignItems="center">
-            <Grid item xs={12} md={6}>
+                     <Grid container spacing={4} alignItems="center">
+             <Grid size={{ xs: 12, md: 6 }}>
               <Fade in timeout={1000}>
                 <Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -183,7 +183,7 @@ export const Home: React.FC = () => {
                 </Box>
               </Fade>
             </Grid>
-            <Grid item xs={12} md={6}>
+                         <Grid size={{ xs: 12, md: 6 }}>
               <Grow in timeout={1500}>
                 <Box
                   sx={{
@@ -249,9 +249,9 @@ export const Home: React.FC = () => {
       {/* Stats Section */}
       <Box sx={{ py: 6, bgcolor: 'grey.50' }}>
         <Container maxWidth="lg">
-          <Grid container spacing={3}>
-            {stats.map((stat, index) => (
-              <Grid item xs={6} md={3} key={index}>
+                     <Grid container spacing={3}>
+             {stats.map((stat, index) => (
+               <Grid size={{ xs: 6, md: 3 }} key={index}>
                 <Zoom in timeout={1000 + index * 200}>
                   <Box sx={{ textAlign: 'center' }}>
                     <Typography variant="h3" sx={{ fontWeight: 800, color: theme.palette.primary.main, mb: 1 }}>
@@ -292,7 +292,7 @@ export const Home: React.FC = () => {
         </Box>
         <Grid container spacing={4}>
           {features.map((feature, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
+                         <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
               <Grow in timeout={1000 + index * 200}>
                 <Card
                   sx={{

@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Box,
-  Grid,
   Card,
   CardContent,
   Typography,
@@ -9,6 +8,7 @@ import {
 
   useTheme,
 } from '@mui/material';
+import { Grid } from '@mui/material';
 import {
   Business,
   SmartToy,
@@ -114,8 +114,8 @@ export const Dashboard: React.FC = () => {
 
       {/* Stats Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        {stats.map((stat) => (
-          <Grid item xs={12} sm={6} md={3} key={stat.title}>
+                 {stats.map((stat) => (
+           <Grid size={{ xs: 12, sm: 6, md: 3 }} key={stat.title}>
             <Card
               sx={{
                 height: '100%',
@@ -154,8 +154,8 @@ export const Dashboard: React.FC = () => {
       </Grid>
 
       {/* Quick Actions */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item xs={12} md={6}>
+             <Grid container spacing={3} sx={{ mb: 4 }}>
+         <Grid size={{ xs: 12, md: 6 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
@@ -194,7 +194,7 @@ export const Dashboard: React.FC = () => {
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={6}>
+                 <Grid size={{ xs: 12, md: 6 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>

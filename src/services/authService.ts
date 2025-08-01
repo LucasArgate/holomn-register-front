@@ -24,14 +24,14 @@ export interface WebAuthnRegistrationOptions {
     displayName: string;
   };
   pubKeyCredParams: Array<{
-    type: string;
+    type: 'public-key';
     alg: number;
   }>;
   timeout: number;
-  attestation: string;
+  attestation: 'none' | 'indirect' | 'direct' | 'enterprise';
   authenticatorSelection: {
-    authenticatorAttachment: string;
-    userVerification: string;
+    authenticatorAttachment: 'platform' | 'cross-platform';
+    userVerification: 'preferred' | 'required' | 'discouraged';
   };
 }
 
@@ -39,11 +39,11 @@ export interface WebAuthnAuthenticationOptions {
   challenge: string;
   rpId: string;
   allowCredentials: Array<{
-    type: string;
+    type: 'public-key';
     id: string;
-    transports: string[];
+    transports: ('ble' | 'internal' | 'nfc' | 'usb')[];
   }>;
-  userVerification: string;
+  userVerification: 'preferred' | 'required' | 'discouraged';
   timeout: number;
 }
 
@@ -86,17 +86,26 @@ class AuthService {
       const authOptions: WebAuthnAuthenticationOptions = {
         challenge: btoa('simulated-challenge-' + Date.now()),
         rpId: window.location.hostname,
-        allowCredentials: [],
+        allowCredentials: [
+          {
+            type: 'public-key',
+            id: btoa('mock-credential-id'),
+            transports: ['internal'],
+          },
+        ],
         userVerification: 'preferred',
         timeout: 60000,
       };
 
-      console.log('Iniciando autenticação WebAuthn...');
+      console.log('🔐 Iniciando autenticação WebAuthn...');
       
       // Iniciar autenticação WebAuthn
-      const authResponse = await startAuthentication(authOptions);
+      const authResponse = await startAuthentication({
+        optionsJSON: authOptions,
+        useBrowserAutofill: true,
+      });
 
-      console.log('WebAuthn autenticação bem-sucedida:', authResponse);
+      console.log('✅ WebAuthn autenticação bem-sucedida:', authResponse);
 
       // Simular usuário autenticado
       const mockUser = {
@@ -108,14 +117,18 @@ class AuthService {
 
       // Salvar dados do usuário
       localStorage.setItem('user', JSON.stringify(mockUser));
+      console.log('🎉 Usuário autenticado com sucesso!');
       
     } catch (error) {
       if (error instanceof WebAuthnError) {
         console.error('WebAuthn error:', error);
         if (error.code === 'ERROR_CEREMONY_ABORTED') {
-          throw new Error('Autenticação cancelada pelo usuário');
+          throw new Error('👆 Autenticação cancelada. Tente novamente quando estiver pronto.');
         }
-        throw new Error(`Erro WebAuthn: ${error.message}`);
+        if (error.message.includes('timeout') || error.message.includes('not allowed')) {
+          throw new Error('⏰ Tempo limite excedido ou permissão negada. Verifique se seu dispositivo tem autenticação biométrica configurada.');
+        }
+        throw new Error(`🔐 Erro na autenticação biométrica: ${error.message}`);
       }
       throw error;
     }
@@ -125,7 +138,7 @@ class AuthService {
     try {
       // Verificar se o navegador suporta WebAuthn
       if (!browserSupportsWebAuthn()) {
-        throw new Error('Seu navegador não suporta WebAuthn');
+        throw new Error('🔒 Seu navegador não suporta autenticação biométrica. Tente usar um navegador mais recente como Chrome, Firefox ou Safari.');
       }
 
       // Simular opções de registro WebAuthn
@@ -154,12 +167,14 @@ class AuthService {
         },
       };
 
-      console.log('Iniciando registro WebAuthn...');
+      console.log('🔐 Iniciando registro WebAuthn...');
       
       // Iniciar registro WebAuthn
-      const registrationResponse = await startRegistration(registrationOptions);
+      const registrationResponse = await startRegistration({
+        optionsJSON: registrationOptions,
+      });
 
-      console.log('WebAuthn registro bem-sucedido:', registrationResponse);
+      console.log('✅ WebAuthn registro bem-sucedido:', registrationResponse);
 
       // Simular usuário registrado
       const mockUser = {
@@ -171,14 +186,18 @@ class AuthService {
 
       // Salvar dados do usuário
       localStorage.setItem('user', JSON.stringify(mockUser));
+      console.log('🎉 Conta criada com sucesso!');
       
     } catch (error) {
       if (error instanceof WebAuthnError) {
         console.error('WebAuthn error:', error);
         if (error.code === 'ERROR_CEREMONY_ABORTED') {
-          throw new Error('Registro cancelado pelo usuário');
+          throw new Error('👆 Registro cancelado. Tente novamente quando estiver pronto.');
         }
-        throw new Error(`Erro WebAuthn: ${error.message}`);
+        if (error.message.includes('timeout') || error.message.includes('not allowed')) {
+          throw new Error('⏰ Tempo limite excedido ou permissão negada. Verifique se seu dispositivo tem autenticação biométrica configurada.');
+        }
+        throw new Error(`🔐 Erro no registro biométrico: ${error.message}`);
       }
       throw error;
     }
@@ -187,14 +206,14 @@ class AuthService {
   private async loginWithMagicLink(email: string): Promise<void> {
     try {
       // Simular envio de magic link
-      console.log(`Magic link enviado para: ${email}`);
+      console.log(`📧 Magic link enviado para: ${email}`);
       
       // Simular delay de envio
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Em uma aplicação real, você redirecionaria para uma página de confirmação
       // ou mostraria uma mensagem de sucesso
-      throw new Error('Magic link enviado! Verifique seu email para continuar.');
+      throw new Error('📧 Magic link enviado! Verifique seu email e clique no link para fazer login.');
     } catch (error) {
       throw error;
     }
@@ -203,14 +222,14 @@ class AuthService {
   private async registerWithMagicLink(email: string, _name: string): Promise<void> {
     try {
       // Simular envio de magic link de registro
-      console.log(`Magic link de registro enviado para: ${email}`);
+      console.log(`📧 Magic link de registro enviado para: ${email}`);
       
       // Simular delay de envio
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Em uma aplicação real, você redirecionaria para uma página de confirmação
       // ou mostraria uma mensagem de sucesso
-      throw new Error('Magic link enviado! Verifique seu email para continuar.');
+      throw new Error('📧 Magic link de registro enviado! Verifique seu email e clique no link para criar sua conta.');
     } catch (error) {
       throw error;
     }
@@ -218,7 +237,7 @@ class AuthService {
 
   async logout(): Promise<void> {
     localStorage.removeItem('user');
-    console.log('Logout realizado com sucesso');
+    console.log('👋 Logout realizado com sucesso');
   }
 
   async checkAuthStatus(): Promise<boolean> {

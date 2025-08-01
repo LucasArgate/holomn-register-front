@@ -5,9 +5,9 @@ import {
   Card,
   CardContent,
   Button,
-  Grid,
   Chip,
 } from '@mui/material';
+import { Grid } from '@mui/material';
 import { SmartToy, Add } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
@@ -59,8 +59,8 @@ export const Agents: React.FC = () => {
       </Box>
 
       <Grid container spacing={3}>
-        {mockAgents.map((agent) => (
-          <Grid item xs={12} md={4} key={agent.id}>
+                 {mockAgents.map((agent) => (
+           <Grid size={{ xs: 12, md: 4 }} key={agent.id}>
             <Card sx={{ height: '100%' }}>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>

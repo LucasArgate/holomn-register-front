@@ -7,8 +7,8 @@ import {
   Button,
   Chip,
   LinearProgress,
-  Grid,
 } from '@mui/material';
+import { Grid } from '@mui/material';
 import { School, Add } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
@@ -89,8 +89,8 @@ export const Learning: React.FC = () => {
       </Box>
 
       <Grid container spacing={3}>
-        {mockModels.map((model) => (
-          <Grid item xs={12} md={4} key={model.id}>
+                 {mockModels.map((model) => (
+           <Grid size={{ xs: 12, md: 4 }} key={model.id}>
             <Card sx={{ height: '100%' }}>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
