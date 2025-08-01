@@ -2,7 +2,7 @@ import {
   startRegistration,
   startAuthentication,
   browserSupportsWebAuthn,
-  platformAuthenticatorIsAvailable,
+  
   WebAuthnError,
 } from '@simplewebauthn/browser';
 import { shouldUseWebAuthn } from '../utils/deviceDetection';
@@ -124,12 +124,12 @@ class AuthService {
     }
   }
 
-  private async loginWithMagicLink(email: string): Promise<void> {
+  private async loginWithMagicLink(_email: string): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 1000));
     throw new Error('📧 Magic link enviado! Verifique seu email.');
   }
 
-  private async registerWithMagicLink(email: string, _name: string): Promise<void> {
+  private async registerWithMagicLink(_email: string, _name: string): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 1000));
     throw new Error('📧 Magic link de registro enviado! Verifique seu email.');
   }
