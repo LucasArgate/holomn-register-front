@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import type { AuthState, User } from '../types';
+import { authService } from '../services/authService';
+import { shouldUseWebAuthn } from '../utils/deviceDetection';
 
 interface AuthContextType extends AuthState {
   login: (email: string) => Promise<void>;
@@ -7,6 +9,7 @@ interface AuthContextType extends AuthState {
   logout: () => void;
   sendMagicLink: (email: string) => Promise<void>;
   isWebAuthnSupported: boolean;
+  authMethod: 'webauthn' | 'magic-link';
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -38,6 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
 
   const isWebAuthnSupported = window.PublicKeyCredential !== undefined;
+  const authMethod = shouldUseWebAuthn() ? 'webauthn' : 'magic-link';
 
 
 
@@ -60,12 +64,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     dispatch({ type: 'SET_LOADING', payload: true });
 
     try {
-      // Por enquanto, sempre usar magic link para login
-      // Em uma implementação real, você verificaria se o usuário tem credenciais WebAuthn
-      await sendMagicLink(email);
+      await authService.login(email);
+      
+      // Se chegou até aqui, o login foi bem-sucedido
+      // O usuário já foi salvo no localStorage pelo authService
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        const user = JSON.parse(savedUser);
+        dispatch({ type: 'SET_USER', payload: user });
+      }
     } catch (error) {
       console.error('Erro na autenticação:', error);
-      throw new Error('Falha na autenticação');
+      throw error;
     }
   };
 
@@ -73,31 +83,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     dispatch({ type: 'SET_LOADING', payload: true });
 
     try {
-      // Por enquanto, sempre usar magic link para registro
-      // Em uma implementação real, você configuraria WebAuthn aqui
-      await sendMagicLink(email);
+      await authService.register(email, name);
+      
+      // Se chegou até aqui, o registro foi bem-sucedido
+      // O usuário já foi salvo no localStorage pelo authService
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        const user = JSON.parse(savedUser);
+        dispatch({ type: 'SET_USER', payload: user });
+      }
     } catch (error) {
       console.error('Erro no registro:', error);
-      throw new Error('Falha no registro');
+      throw error;
     }
   };
 
   const sendMagicLink = async (email: string) => {
-    // Simular envio de magic link
-    // Em uma aplicação real, você faria uma chamada para a API
-    console.log(`Magic link enviado para: ${email}`);
-    
-    // Simular delay de envio
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Em uma aplicação real, você redirecionaria para uma página de confirmação
-    // ou mostraria uma mensagem de sucesso
-    throw new Error('Magic link enviado! Verifique seu email para continuar.');
+    // Método mantido para compatibilidade, mas agora usa o authService
+    return authService.login(email);
   };
 
-  const logout = () => {
-    localStorage.removeItem('user');
-    dispatch({ type: 'LOGOUT' });
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.error('Erro no logout:', error);
+    } finally {
+      localStorage.removeItem('user');
+      dispatch({ type: 'LOGOUT' });
+    }
   };
 
   const value: AuthContextType = {
@@ -107,6 +121,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     logout,
     sendMagicLink,
     isWebAuthnSupported,
+    authMethod,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -10,10 +10,12 @@ import {
   CircularProgress,
   Link,
   useTheme,
+  Chip,
 } from '@mui/material';
-import { PersonAdd, ArrowBack } from '@mui/icons-material';
+import { PersonAdd, ArrowBack, Email, Smartphone } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { getDeviceInfo } from '../utils/deviceDetection';
 
 export const Register: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -24,7 +26,8 @@ export const Register: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const theme = useTheme();
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const { register, authMethod } = useAuth();
+  const deviceInfo = getDeviceInfo();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -90,8 +93,27 @@ export const Register: React.FC = () => {
           <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 600 }}>
             Criar Conta
           </Typography>
+          
+          {/* Indicador do método de autenticação */}
+          <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
+            <Chip
+              icon={authMethod === 'webauthn' ? <Smartphone /> : <Email />}
+              label={
+                authMethod === 'webauthn' 
+                  ? 'Registro Biométrico' 
+                  : 'Magic Link'
+              }
+              color={authMethod === 'webauthn' ? 'primary' : 'secondary'}
+              variant="outlined"
+              sx={{ fontWeight: 600 }}
+            />
+          </Box>
+          
           <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-            Receba um link mágico por email para criar sua conta
+            {authMethod === 'webauthn' 
+              ? 'Configure sua digital ou chave de segurança para criar sua conta'
+              : 'Receba um link mágico por email para criar sua conta'
+            }
           </Typography>
 
           <form onSubmit={handleSubmit}>
@@ -124,27 +146,27 @@ export const Register: React.FC = () => {
               </Alert>
             )}
 
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              size="large"
-              disabled={loading || !formData.name || !formData.email}
-              sx={{
-                py: 1.5,
-                mb: 3,
-                position: 'relative',
-              }}
-            >
-              {loading ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : (
-                <>
-                  <PersonAdd sx={{ mr: 1 }} />
-                  Enviar Link
-                </>
-              )}
-            </Button>
+                         <Button
+               type="submit"
+               fullWidth
+               variant="contained"
+               size="large"
+               disabled={loading || !formData.name || !formData.email}
+               sx={{
+                 py: 1.5,
+                 mb: 3,
+                 position: 'relative',
+               }}
+             >
+                               {loading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  <>
+                    <PersonAdd sx={{ mr: 1 }} />
+                    {authMethod === 'webauthn' ? 'Registrar' : 'Enviar Link'}
+                  </>
+                )}
+             </Button>
 
             <Box sx={{ textAlign: 'center' }}>
               <Typography variant="body2" color="text.secondary">

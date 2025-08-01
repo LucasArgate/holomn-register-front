@@ -6,6 +6,7 @@ import { theme } from './theme/theme';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { PWAInstall } from './components/PWAInstall';
 import { DashboardLayout } from './components/DashboardLayout';
+
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
@@ -129,8 +130,8 @@ const App: React.FC = () => {
       <CssBaseline />
       <AuthProvider>
         <BrowserRouter>
-          <AppRoutes />
-          <PWAInstall />
+                           <AppRoutes />
+                 <PWAInstall />
         </BrowserRouter>
       </AuthProvider>
     </ThemeProvider>
