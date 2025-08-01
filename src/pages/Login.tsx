@@ -15,8 +15,6 @@ import {
 import { Fingerprint, ArrowBack, Email, Smartphone } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getDeviceInfo } from '../utils/deviceDetection';
-
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
@@ -24,7 +22,6 @@ export const Login: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { login, authMethod } = useAuth();
-  const deviceInfo = getDeviceInfo();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,7 +114,7 @@ export const Login: React.FC = () => {
               sx={{ mb: 3 }}
               disabled={loading}
               inputProps={{
-                autocomplete: authMethod === 'webauthn' ? 'webauthn' : 'email',
+                autoComplete: authMethod === 'webauthn' ? 'webauthn' : 'email',
               }}
             />
 

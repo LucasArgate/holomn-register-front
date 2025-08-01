@@ -22,8 +22,7 @@ import {
   Business,
   DataUsage,
   Rocket,
-  TrendingUp,
-  Psychology,
+
   AutoAwesome,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';

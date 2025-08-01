@@ -15,8 +15,6 @@ import {
 import { PersonAdd, ArrowBack, Email, Smartphone } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getDeviceInfo } from '../utils/deviceDetection';
-
 export const Register: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -27,7 +25,6 @@ export const Register: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { register, authMethod } = useAuth();
-  const deviceInfo = getDeviceInfo();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({

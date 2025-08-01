@@ -5,8 +5,7 @@ import {
   platformAuthenticatorIsAvailable,
   WebAuthnError,
 } from '@simplewebauthn/browser';
-import { shouldUseWebAuthn, shouldUseMagicLink, getDeviceInfo } from '../utils/deviceDetection';
-import { API_CONFIG, apiRequest } from '../config/api';
+import { shouldUseWebAuthn, getDeviceInfo } from '../utils/deviceDetection';
 
 export interface AuthOptions {
   email: string;
@@ -76,7 +75,7 @@ class AuthService {
     try {
       // Verificar se o navegador suporta WebAuthn
       if (!browserSupportsWebAuthn()) {
-        throw new Error('Seu navegador não suporta WebAuthn');
+        throw new Error('🔒 Seu navegador não suporta autenticação biométrica. Tente usar um navegador mais recente como Chrome, Firefox ou Safari.');
       }
 
       // Verificar se há autenticador de plataforma disponível
@@ -201,7 +200,7 @@ class AuthService {
     }
   }
 
-  private async registerWithMagicLink(email: string, name: string): Promise<void> {
+  private async registerWithMagicLink(email: string, _name: string): Promise<void> {
     try {
       // Simular envio de magic link de registro
       console.log(`Magic link de registro enviado para: ${email}`);

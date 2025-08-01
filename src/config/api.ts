@@ -1,6 +1,6 @@
 export const API_CONFIG = {
   // URLs base da API
-  baseUrl: process.env.NODE_ENV === 'production' 
+  baseUrl: import.meta.env.PROD
     ? 'https://holomn.com.br/api' 
     : 'http://localhost:3000/api',
   
