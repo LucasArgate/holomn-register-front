@@ -12,7 +12,7 @@ export const getDeviceInfo = (): DeviceInfo => {
   const hostname = window.location.hostname;
   
   // Detectar se é mobile
-  const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+  const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile|tablet/i.test(userAgent);
   const isDesktop = !isMobile;
   
   // Detectar ambiente

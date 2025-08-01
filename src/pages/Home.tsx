@@ -449,6 +449,33 @@ export const Home: React.FC = () => {
           </Box>
         </Container>
       </Box>
+
+      {/* Footer com versão */}
+      <Box
+        sx={{
+          py: 2,
+          bgcolor: 'background.paper',
+          borderTop: 1,
+          borderColor: 'divider',
+        }}
+      >
+        <Container maxWidth="lg">
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography 
+              variant="caption" 
+              color="text.secondary"
+              sx={{ 
+                opacity: 0.7,
+                fontFamily: 'monospace',
+                fontSize: '0.75rem',
+                letterSpacing: '0.5px'
+              }}
+            >
+              v1.0.0.1 beta
+            </Typography>
+          </Box>
+        </Container>
+      </Box>
     </Box>
   );
 }; 
